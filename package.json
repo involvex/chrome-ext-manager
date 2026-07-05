@@ -1,6 +1,7 @@
 {
-  "name": "ext-cli",
+  "name": "@involvex/ext-cli",
   "version": "1.0.0",
+  "author": "involvex",
   "type": "module",
   "bin": {
     "ext-cli": "./src/cli.ts"
@@ -11,7 +12,10 @@
     "test": "bun test",
     "typecheck": "tsc --noEmit",
     "lint": "biome check src/ test/",
-    "format": "biome format --write src/ test/"
+    "lint:fix": "biome check src/ test/ --fix",
+    "format": "biome format --write src/ test/",
+    "check": "bun run format && bun run lint:fix && bun run typecheck",
+    "prebuild": "bun run check"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.2",

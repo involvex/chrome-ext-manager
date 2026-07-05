@@ -4,6 +4,7 @@ import { Command } from "commander";
 import { downloadExtension } from "./downloader";
 import { extractCrx } from "./extractor";
 import { packCrx } from "./packer";
+import { searchExtensions } from "./search";
 
 const program = new Command();
 
@@ -60,6 +61,34 @@ program
     try {
       const crxPath = await packCrx(directory, opts.output);
       console.log(`\nDone! Packed to: ${crxPath}`);
+    } catch (error) {
+      console.error(`Error: ${error instanceof Error ? error.message : error}`);
+      process.exit(1);
+    }
+  });
+
+program
+  .command("search")
+  .description("Search Chrome Web Store and Edge Add-ons for extensions")
+  .argument("<query>", "Search query")
+  .action(async (query: string) => {
+    try {
+      console.log(`Searching for "${query}"...`);
+      const results = await searchExtensions(query);
+
+      if (results.length === 0) {
+        console.log("No extensions found.");
+        return;
+      }
+
+      console.log(`\nFound ${results.length} extensions:\n`);
+
+      for (const result of results) {
+        console.log(`- ${result.name}`);
+        console.log(`  ID: ${result.id}`);
+        console.log(`  Store: ${result.store}`);
+        console.log("");
+      }
     } catch (error) {
       console.error(`Error: ${error instanceof Error ? error.message : error}`);
       process.exit(1);
