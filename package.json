@@ -4,10 +4,10 @@
   "type": "module",
   "module": "index.ts",
   "bin": {
-    "ext-cli": "./src/cli.ts"
+    "ext-cli": "./ext-cli.exe"
   },
   "scripts": {
-    "build": "bun build src/cli.ts --compile --outfile ext-cli",
+    "build": "bun build src/cli.ts --compile --outfile ext-cli.exe",
     "dev": "bun run src/cli.ts",
     "test": "bun test"
   },
