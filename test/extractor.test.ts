@@ -1,8 +1,8 @@
 // test/extractor.test.ts
-import { describe, test, expect, beforeEach, afterEach } from "bun:test";
+import { afterEach, beforeEach, expect, test } from "bun:test";
+import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import { extractCrx } from "../src/extractor";
-import { mkdirSync, rmSync, writeFileSync, existsSync } from "fs";
-import { join } from "path";
 
 const TEST_DIR = join(import.meta.dir, "__test_extract__");
 
@@ -19,10 +19,7 @@ test("extractCrx extracts a CRX file to directory", async () => {
 
   const extDir = join(TEST_DIR, "ext_src");
   mkdirSync(extDir, { recursive: true });
-  writeFileSync(
-    join(extDir, "manifest.json"),
-    JSON.stringify({ name: "test", version: "1.0" }),
-  );
+  writeFileSync(join(extDir, "manifest.json"), JSON.stringify({ name: "test", version: "1.0" }));
 
   const proc = Bun.spawn([
     "powershell",

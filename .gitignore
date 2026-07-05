@@ -5,6 +5,7 @@ node_modules
 out
 dist
 *.tgz
+ext-cli.exe
 
 # code coverage
 coverage

@@ -1,12 +1,9 @@
 // src/extractor.ts
-import { readFile, mkdir, writeFile } from "fs/promises";
-import { join, basename } from "path";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { basename, join } from "node:path";
 import { extractZipFromCrx } from "./crx-parser";
 
-export async function extractCrx(
-  crxPath: string,
-  outputDir?: string,
-): Promise<string> {
+export async function extractCrx(crxPath: string, outputDir?: string): Promise<string> {
   const crxBuffer = await readFile(crxPath);
   const zipBuffer = extractZipFromCrx(crxBuffer);
 
@@ -29,7 +26,7 @@ export async function extractCrx(
     throw new Error(`Failed to extract ZIP: ${stderr}`);
   }
 
-  const { unlink } = await import("fs/promises");
+  const { unlink } = await import("node:fs/promises");
   await unlink(tempZip);
 
   console.log(`Extracted to: ${destDir}`);

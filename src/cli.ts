@@ -9,9 +9,7 @@ const program = new Command();
 
 program
   .name("ext-cli")
-  .description(
-    "Chrome/Edge Extension Manager - download, extract, and pack extensions",
-  )
+  .description("Chrome/Edge Extension Manager - download, extract, and pack extensions")
   .version("1.0.0");
 
 program

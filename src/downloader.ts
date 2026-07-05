@@ -1,7 +1,8 @@
 // src/downloader.ts
+
+import { mkdir, writeFile } from "node:fs/promises";
+import { join } from "node:path";
 import { parseStoreUrl } from "./url-parser";
-import { mkdir, writeFile } from "fs/promises";
-import { join } from "path";
 
 const CHROME_CRX_URL =
   "https://clients2.google.com/service/update2/crx?response=redirect&prodversion=131.0&acceptformat=crx2,crx3&x=id%3D{ID}%26uc";
@@ -19,10 +20,7 @@ function buildDownloadUrl(id: string, store: "chrome" | "edge"): string {
  * Accepts a full store URL or a bare 32-char extension ID.
  * Returns the path to the saved .crx file.
  */
-export async function downloadExtension(
-  urlOrId: string,
-  outputDir: string = ".",
-): Promise<string> {
+export async function downloadExtension(urlOrId: string, outputDir: string = "."): Promise<string> {
   const { id, store } = parseStoreUrl(urlOrId);
   const downloadUrl = buildDownloadUrl(id, store);
 
@@ -38,9 +36,7 @@ export async function downloadExtension(
   });
 
   if (!response.ok) {
-    throw new Error(
-      `Download failed: HTTP ${response.status} ${response.statusText}`,
-    );
+    throw new Error(`Download failed: HTTP ${response.status} ${response.statusText}`);
   }
 
   const arrayBuffer = await response.arrayBuffer();

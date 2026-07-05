@@ -3,10 +3,8 @@ export interface StoreInfo {
   store: "chrome" | "edge";
 }
 
-const CHROME_URL_RE =
-  /chromewebstore\.google\.com\/(?:webstore\/)?detail\/[^/]+\/([a-z0-9]+)/i;
-const EDGE_URL_RE =
-  /microsoftedge\.microsoft\.com\/addons\/detail\/[^/]+\/([a-z0-9]+)/i;
+const CHROME_URL_RE = /chromewebstore\.google\.com\/(?:webstore\/)?detail\/[^/]+\/([a-z0-9]+)/i;
+const EDGE_URL_RE = /microsoftedge\.microsoft\.com\/addons\/detail\/[^/]+\/([a-z0-9]+)/i;
 const BARE_ID_RE = /^[a-z0-9]+$/i;
 
 export function parseStoreUrl(input: string): StoreInfo {

@@ -1,6 +1,6 @@
 // test/crx-parser.test.ts
-import { describe, test, expect } from "bun:test";
-import { parseCrxHeader, extractZipFromCrx } from "../src/crx-parser";
+import { describe, expect, test } from "bun:test";
+import { extractZipFromCrx, parseCrxHeader } from "../src/crx-parser";
 
 describe("CRX Parser", () => {
   test("parseCrxHeader reads CRX3 header", () => {

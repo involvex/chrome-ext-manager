@@ -15,9 +15,7 @@ export function parseCrxHeader(buffer: Buffer): CrxInfo {
 
   const magic = buffer.toString("ascii", 0, 4);
   if (magic !== CRX_MAGIC) {
-    throw new Error(
-      `Not a CRX file: invalid magic "${magic}" (expected "${CRX_MAGIC}")`,
-    );
+    throw new Error(`Not a CRX file: invalid magic "${magic}" (expected "${CRX_MAGIC}")`);
   }
 
   const version = buffer.readUInt32LE(4);

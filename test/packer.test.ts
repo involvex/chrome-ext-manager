@@ -1,7 +1,7 @@
-import { describe, test, expect, beforeEach, afterEach } from "bun:test";
+import { afterEach, beforeEach, expect, test } from "bun:test";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import { packCrx } from "../src/packer";
-import { mkdirSync, rmSync, writeFileSync, existsSync, readFileSync } from "fs";
-import { join } from "path";
 
 const TEST_DIR = join(import.meta.dir, "__test_pack__");
 

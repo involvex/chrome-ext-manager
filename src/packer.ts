@@ -1,7 +1,7 @@
-import { readFileSync, writeFileSync, existsSync, unlinkSync } from "fs";
-import { join } from "path";
+import { execSync } from "node:child_process";
+import { existsSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import forge from "node-forge";
-import { execSync } from "child_process";
 
 const ALPHABET = "abcdefghijklmnop";
 const CHUNK_SIZE = 8192;
@@ -40,17 +40,13 @@ function encodeVarint(value: number): number[] {
   return bytes;
 }
 
-function encodeField(
-  fieldNumber: number,
-  wireType: number,
-  data: number[],
-): number[] {
+function encodeField(fieldNumber: number, wireType: number, data: number[]): number[] {
   const tag = encodeVarint((fieldNumber << 3) | wireType);
   return [...tag, ...encodeVarint(data.length), ...data];
 }
 
 function buildCrx3Header(publicKeyDer: Buffer, signature: Buffer): Buffer {
-  const pubKeyProof = encodeField(1, 2, [
+  const _pubKeyProof = encodeField(1, 2, [
     ...encodeField(1, 2, Array.from(publicKeyDer)),
     ...encodeField(2, 2, Array.from(signature)),
   ]);
@@ -64,10 +60,7 @@ function buildCrx3Header(publicKeyDer: Buffer, signature: Buffer): Buffer {
   return Buffer.from(header);
 }
 
-export async function packCrx(
-  dirPath: string,
-  outputPath?: string,
-): Promise<string> {
+export async function packCrx(dirPath: string, outputPath?: string): Promise<string> {
   const manifestPath = join(dirPath, "manifest.json");
   if (!existsSync(manifestPath)) {
     throw new Error("No manifest.json found in directory");
@@ -89,11 +82,7 @@ export async function packCrx(
 
   const pubDerBuf = Buffer.from(
     forge.asn1
-      .toDer(
-        forge.pki.publicKeyToAsn1(
-          forge.pki.setRsaPublicKey(privateKey.n, privateKey.e),
-        ),
-      )
+      .toDer(forge.pki.publicKeyToAsn1(forge.pki.setRsaPublicKey(privateKey.n, privateKey.e)))
       .getBytes(),
     "binary",
   );
@@ -106,8 +95,8 @@ export async function packCrx(
       `powershell -NoProfile -Command "Compress-Archive -Path '${join(dirPath, "*")}' -DestinationPath '${tmpZip}' -Force"`,
       { stdio: "pipe" },
     );
-  } catch (e: any) {
-    throw new Error(`Failed to create ZIP: ${e.message}`);
+  } catch (e: unknown) {
+    throw new Error(`Failed to create ZIP: ${e instanceof Error ? e.message : String(e)}`);
   }
 
   const zipData = readFileSync(tmpZip);

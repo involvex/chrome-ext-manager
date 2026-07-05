@@ -12,4 +12,4 @@
 | 6: Packer | complete | 8d6308d | 2/2 tests pass |
 | 7: CLI Entry Point | complete | aaaf063 | all help commands pass |
 | 8: E2E Testing | complete | e8a2b3a | download, extract, pack all verified |
-| 9: Build & Release | pending | — | — |
+| 9: Build & Release | complete | b65a1ba | ext-cli.exe builds and runs |
