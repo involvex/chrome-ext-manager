@@ -1,0 +1,25 @@
+{
+  "name": "ext-cli",
+  "version": "1.0.0",
+  "type": "module",
+  "module": "index.ts",
+  "bin": {
+    "ext-cli": "./src/cli.ts"
+  },
+  "scripts": {
+    "build": "bun build src/cli.ts --compile --outfile ext-cli",
+    "dev": "bun run src/cli.ts",
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^26.1.0"
+  },
+  "peerDependencies": {
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "commander": "^15.0.0",
+    "node-forge": "^1.4.0"
+  }
+}
