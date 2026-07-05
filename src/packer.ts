@@ -1,9 +1,26 @@
-import { readFileSync, writeFileSync, existsSync } from "fs";
+import { readFileSync, writeFileSync, existsSync, unlinkSync } from "fs";
 import { join } from "path";
 import forge from "node-forge";
 import { execSync } from "child_process";
 
 const ALPHABET = "abcdefghijklmnop";
+const CHUNK_SIZE = 8192;
+
+/**
+ * Safely encode a Buffer to a forge binary string without stack overflow.
+ * forge.util.binary.raw.encode uses String.fromCharCode.apply which
+ * overflows the stack for large buffers.
+ */
+function safeBinaryEncode(buf: Buffer): string {
+  let result = "";
+  for (let i = 0; i < buf.length; i += CHUNK_SIZE) {
+    result += String.fromCharCode.apply(
+      null,
+      buf.subarray(i, i + CHUNK_SIZE) as unknown as number[],
+    );
+  }
+  return result;
+}
 
 function computeExtensionId(publicKeyDer: Buffer): string {
   const md = forge.md.sha256.create();
@@ -83,7 +100,7 @@ export async function packCrx(
 
   const crxId = computeExtensionId(pubDerBuf);
 
-  const tmpZip = join(dirPath, "__tmp_pack__.zip");
+  const tmpZip = join(dirPath, "..", "__tmp_pack__.zip");
   try {
     execSync(
       `powershell -NoProfile -Command "Compress-Archive -Path '${join(dirPath, "*")}' -DestinationPath '${tmpZip}' -Force"`,
@@ -97,7 +114,7 @@ export async function packCrx(
 
   const signMd = forge.md.sha256.create();
   signMd.update(crxId);
-  signMd.update(forge.util.binary.raw.encode(zipData));
+  signMd.update(safeBinaryEncode(zipData));
 
   const sigBytes = privateKey.sign(signMd);
 
@@ -114,7 +131,6 @@ export async function packCrx(
   writeFileSync(out, result);
 
   try {
-    const { unlinkSync } = await import("fs");
     unlinkSync(tmpZip);
   } catch {}
 
